@@ -154,6 +154,7 @@
     <Compile Include="Index\Hashes\Murmur3AUnsafe.cs" />
     <Compile Include="Index\Hashes\XXHashUnsafe.cs" />
     <Compile Include="Index\IIndexFilenameProvider.cs" />
+    <Compile Include="Index\IIndexScavengerLog.cs" />
     <Compile Include="Index\IMemTable.cs" />
     <Compile Include="Index\IndexEntry.cs" />
     <Compile Include="Index\IndexEntryV1.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="Index\PTableConstruction.cs" />
     <Compile Include="Index\PTableHeader.cs" />
     <Compile Include="Index\PTableFooter.cs" />
+    <Compile Include="Index\ScavengeResult.cs" />
     <Compile Include="Index\SortedListExtensions.cs" />
     <Compile Include="ISubsystem.cs" />
     <Compile Include="Messages\ClusterInfoDto.cs" />

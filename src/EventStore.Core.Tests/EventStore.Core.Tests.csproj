@@ -278,6 +278,7 @@
     <Compile Include="Index\IndexV2\table_index_hash_collision_when_upgrading_to_64bit.cs" />
     <Compile Include="Index\IndexV2\table_index_when_merging_upgrading_to_64bit_if_entry_doesnt_exist_drops_entry_and_carries_on.cs" />
     <Compile Include="Index\IndexV2\opening_a_ptable_with_more_than_32bits_of_records.cs" />
+    <Compile Include="Index\Scavenge\when_scavenging_an_index.cs" />
     <Compile Include="Index\MemTableTests.cs" />
     <Compile Include="Index\IndexV1\adding_four_items_to_empty_index_map_with_four_tables_per_level_causes_merge.cs" />
     <Compile Include="Index\IndexV1\adding_two_items_to_empty_index_map_with_two_tables_per_level_causes_merge.cs" />
@@ -314,6 +315,15 @@
     <Compile Include="Index\IndexVAny\when_opening_ptable_without_right_flag_in_header.cs" />
     <Compile Include="Index\IndexV1\adding_four_items_to_empty_index_map_with_two_tables_per_level_causes_double_merge.cs" />
     <Compile Include="Index\IndexV1\adding_item_to_empty_index_map.cs" />
+    <Compile Include="Index\Scavenge\when_scavenging_an_index_fails.cs" />
+    <Compile Include="Index\Scavenge\when_scavenging_an_index_is_cancelled.cs" />
+    <Compile Include="Index\Scavenge\when_scavenging_an_index_removes_nothing.cs" />
+    <Compile Include="Index\Scavenge\when_scavenging_a_table_index.cs" />
+    <Compile Include="Index\Scavenge\when_scavenging_a_table_index_and_another_table_is_completed_during.cs" />
+    <Compile Include="Index\Scavenge\when_scavenging_a_table_index_cancelled_while_scavenging_table.cs" />
+    <Compile Include="Index\Scavenge\when_scavenging_a_table_index_cancelled_while_waiting_for_lock.cs" />
+    <Compile Include="Index\Scavenge\when_scavenging_a_table_index_fails.cs" />
+    <Compile Include="Index\Scavenge\when_scavenging_a_v1_index.cs" />
     <Compile Include="Infrastructure\RandTestQueueItem.cs" />
     <Compile Include="Infrastructure\IRandTestFinishCondition.cs" />
     <Compile Include="Infrastructure\IRandTestItemProcessor.cs" />
