@@ -72,7 +72,7 @@ jobs:
   - bash: |
       dotnet test -v normal -c $(Configuration) --logger trx --blame --settings ./ci/ci.runsettings src/EventStore.ClientAPI.Tests
     displayName: Run Tests
-    timeoutInMinutes: 4
+    timeoutInMinutes: 10
   - task: PublishTestResults@2
     displayName: Publish Test Results
     condition: succeededOrFailed()

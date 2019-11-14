@@ -83,10 +83,10 @@ namespace EventStore.ClientAPI.Tests {
 			get {
 				var builder = ConnectionSettings.Create()
 					.EnableVerboseLogging()
-					.LimitReconnectionsTo(10)
-					.LimitRetriesForOperationTo(100)
+					.LimitReconnectionsTo(0)
+					.LimitRetriesForOperationTo(0)
 					.SetTimeoutCheckPeriodTo(TimeSpan.FromMilliseconds(100))
-					.SetReconnectionDelayTo(TimeSpan.Zero)
+					.SetReconnectionDelayTo(TimeSpan.FromMilliseconds(100))
 					.FailOnNoServerResponse();
 
 				// ReSharper disable ConditionIsAlwaysTrueOrFalse
@@ -104,7 +104,7 @@ namespace EventStore.ClientAPI.Tests {
 
 		private static ConnectionSettingsBuilder DefaultConfigureSettings(
 			ConnectionSettingsBuilder builder)
-			=> builder.EnableVerboseLogging().KeepRetrying().KeepReconnecting().UseFileLogger("/tmp/eslogs/client.log");
+			=> builder.EnableVerboseLogging().UseFileLogger("/tmp/eslogs/client.log");
 
 		public IEnumerable<EventData> CreateTestEvents(int count = 1)
 			=> Enumerable.Range(0, count).Select(CreateTestEvent);
