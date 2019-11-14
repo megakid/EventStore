@@ -13,6 +13,7 @@ namespace EventStore.ClientAPI.Transport.Tcp {
 		private readonly SocketArgsPool _connectSocketArgsPool;
 		private readonly ConcurrentDictionary<Guid, PendingConnection> _pendingConections;
 		private readonly Timer _timer;
+		private ILogger _log;
 
 		public TcpClientConnector() {
 			_connectSocketArgsPool = new SocketArgsPool("TcpClientConnectorSocketArgsPool",
@@ -39,6 +40,7 @@ namespace EventStore.ClientAPI.Transport.Tcp {
 			Action<ITcpConnection> onConnectionEstablished = null,
 			Action<ITcpConnection, SocketError> onConnectionFailed = null,
 			Action<ITcpConnection, SocketError> onConnectionClosed = null) {
+			_log = log;
 			Ensure.NotNull(remoteEndPoint, "remoteEndPoint");
 			if (ssl) {
 				Ensure.NotNullOrEmpty(targetHost, "targetHost");
@@ -79,9 +81,11 @@ namespace EventStore.ClientAPI.Transport.Tcp {
 				var firedAsync = connectingSocket.ConnectAsync(socketArgs);
 				if (!firedAsync)
 					ProcessConnect(socketArgs);
-			} catch (ObjectDisposedException) {
+			} catch (ObjectDisposedException e) {
+				_log.Error("Connect error object disposed: "+e.Message);
 				HandleBadConnect(socketArgs);
-			} catch (Exception) {
+			} catch (Exception e) {
+				_log.Error("Connect error exception: "+e.Message);
 				HandleBadConnect(socketArgs);
 			}
 		}
