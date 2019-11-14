@@ -24,6 +24,9 @@ namespace EventStore.ClientAPI.Tests {
 		private readonly int _externalPort;
 		private readonly int _externalSecurePort;
 		private readonly int _unusedPort;
+		private readonly int _externalHttpPort;
+		private readonly int _internalHttpPort;
+
 		private readonly ClusterVNode _node;
 
 		static EventStoreClientAPIFixture() {
@@ -48,13 +51,17 @@ namespace EventStore.ClientAPI.Tests {
 			_externalPort = CurPort;
 			_externalSecurePort = CurPort + 1;
 			_unusedPort = CurPort + 2;
-			CurPort += 3;
+			_externalHttpPort = CurPort + 3;
+			_internalHttpPort = CurPort + 4;
+			CurPort += 5;
 
 			InitializeLogger();
 			var vNodeBuilder = ClusterVNodeBuilder
 				.AsSingleNode()
 				.WithExternalTcpOn(new IPEndPoint(IPAddress.Loopback, _externalPort))
 				.WithExternalSecureTcpOn(new IPEndPoint(IPAddress.Loopback, _externalSecurePort))
+				.WithExternalHttpOn(new IPEndPoint(IPAddress.Loopback, _externalHttpPort))
+				.WithInternalHttpOn(new IPEndPoint(IPAddress.Loopback, _internalHttpPort))
 				.WithServerCertificate(ServerCertificate)
 				.RunInMemory();
 
