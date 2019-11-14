@@ -13,7 +13,7 @@ namespace EventStore.ClientAPI.Common.Log {
 		}
 
 		private void OpenFile(string filename) {
-			_streamWriter = new StreamWriter(filename) {AutoFlush = true};
+			_streamWriter = new StreamWriter(filename, true) {AutoFlush = true};
 		}
 
 		public void Error(string format, params object[] args) {
