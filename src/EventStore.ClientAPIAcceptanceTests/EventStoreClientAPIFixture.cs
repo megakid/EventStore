@@ -20,6 +20,7 @@ namespace EventStore.ClientAPI.Tests {
 		private const string TestEventType = "-";
 
 		private static readonly X509Certificate2 ServerCertificate;
+		private static int CurPort = 50000;
 		private readonly int _externalPort;
 		private readonly int _externalSecurePort;
 		private readonly int _unusedPort;
@@ -43,22 +44,11 @@ namespace EventStore.ClientAPI.Tests {
 			using (StreamWriter outputFile = new StreamWriter("/tmp/eslogs/fixture.log", true)) {
 				outputFile.WriteLine("EventStoreClientAPIFixture start");
 			}
-			var defaultLoopBack = new IPEndPoint(IPAddress.Loopback, 0);
 
-			var external = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			var externalSecure = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			var unused = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			external.Bind(defaultLoopBack);
-			externalSecure.Bind(defaultLoopBack);
-			unused.Bind(defaultLoopBack);
-
-			_externalPort = ((IPEndPoint)external.LocalEndPoint).Port;
-			_externalSecurePort = ((IPEndPoint)externalSecure.LocalEndPoint).Port;
-			_unusedPort = ((IPEndPoint)unused.LocalEndPoint).Port;
-
-			external.Dispose();
-			externalSecure.Dispose();
-			unused.Dispose();
+			_externalPort = CurPort;
+			_externalSecurePort = CurPort + 1;
+			_unusedPort = CurPort + 2;
+			CurPort += 3;
 
 			InitializeLogger();
 			var vNodeBuilder = ClusterVNodeBuilder
