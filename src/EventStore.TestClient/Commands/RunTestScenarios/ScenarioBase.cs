@@ -256,7 +256,7 @@ namespace EventStore.TestClient.Commands.RunTestScenarios {
 
 		protected Task Read(string[] streams, int @from, int count) {
 			if (streams.Length == 0) {
-				Debugger.Break();
+				//Debugger.Break();
 				throw new Exception("Streams shouldn't be empty.");
 			}
 

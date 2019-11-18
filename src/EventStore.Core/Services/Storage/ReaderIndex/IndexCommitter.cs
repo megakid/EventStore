@@ -352,9 +352,9 @@ namespace EventStore.Core.Services.Storage.ReaderIndex {
 
 			long lastEventNumber = _indexReader.GetStreamLastEventNumber(streamId);
 			if (newEventNumber != lastEventNumber + 1) {
-				if (Debugger.IsAttached)
-					Debugger.Break();
-				else
+				//if (Debugger.IsAttached)
+					//Debugger.Break();
+				//else
 					throw new Exception(
 						string.Format(
 							"Commit invariant violation: new event number {0} does not correspond to current stream version {1}.\n"
@@ -372,9 +372,9 @@ namespace EventStore.Core.Services.Storage.ReaderIndex {
 					var prepare = prepares[prepareIndex];
 					PrepareLogRecord indexedPrepare = GetPrepare(reader, indexEntry.Position);
 					if (indexedPrepare != null && indexedPrepare.EventStreamId == prepare.EventStreamId) {
-						if (Debugger.IsAttached)
-							Debugger.Break();
-						else
+						//if (Debugger.IsAttached)
+							//Debugger.Break();
+						//else
 							throw new Exception(
 								string.Format("Trying to add duplicate event #{0} to stream {1} \nCommit: {2}\n"
 								              + "Prepare: {3}\nIndexed prepare: {4}.",

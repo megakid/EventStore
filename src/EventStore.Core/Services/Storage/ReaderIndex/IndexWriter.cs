@@ -336,8 +336,8 @@ namespace EventStore.Core.Services.Storage.ReaderIndex {
 				_streamVersions.Put(
 					commitInfo.StreamId,
 					x => {
-						if (!Debugger.IsAttached) Debugger.Launch();
-						else Debugger.Break();
+						//if (!Debugger.IsAttached) Debugger.Launch();
+						//else Debugger.Break();
 						throw new Exception(string.Format("CommitInfo for stream '{0}' is not present!", x));
 					},
 					(streamId, oldVersion) => oldVersion,
@@ -346,8 +346,8 @@ namespace EventStore.Core.Services.Storage.ReaderIndex {
 					_streamRawMetas.Put(
 						SystemStreams.OriginalStreamOf(commitInfo.StreamId),
 						x => {
-							if (!Debugger.IsAttached) Debugger.Launch();
-							else Debugger.Break();
+							//if (!Debugger.IsAttached) Debugger.Launch();
+							//else Debugger.Break();
 							throw new Exception(string.Format(
 								"Original stream CommitInfo for meta-stream '{0}' is not present!",
 								SystemStreams.MetastreamOf(x)));
