@@ -99,7 +99,7 @@ namespace EventStore.Core {
 		private readonly KestrelHttpService _externalHttpService;
 		private readonly ITimeProvider _timeProvider;
 		private readonly ISubsystem[] _subsystems;
-		private readonly TaskCompletionSource<bool> _shutdownSource = new TaskCompletionSource<bool>();
+		private readonly TaskCompletionSource<bool> _shutdownSource = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 		private readonly IAuthenticationProvider _internalAuthenticationProvider;
 		private readonly IReadIndex _readIndex;
 
