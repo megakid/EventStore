@@ -41,8 +41,7 @@ namespace EventStore.Projections.Core {
 				}
 			}
 
-			var commandWriter = new MultiStreamMessageWriter(ioDispatcher);
-			var projectionManagerCommandWriter = new ProjectionManagerCommandWriter(commandWriter, queues);
+			var projectionManagerCommandWriter = new ProjectionManagerCommandWriter(queues);
 
 			var projectionManager = new ProjectionManager(
 				inputQueue,
@@ -112,7 +111,6 @@ namespace EventStore.Projections.Core {
 			mainBus.Subscribe(ioDispatcher.Writer);
 			mainBus.Subscribe(ioDispatcher);
 
-			mainBus.Subscribe<ProjectionManagementMessage.Starting>(projectionManagerCommandWriter);
 			mainBus.Subscribe<CoreProjectionManagementMessage.CreatePrepared>(projectionManagerCommandWriter);
 			mainBus.Subscribe<CoreProjectionManagementMessage.CreateAndPrepare>(projectionManagerCommandWriter);
 			mainBus.Subscribe<CoreProjectionManagementMessage.LoadStopped>(projectionManagerCommandWriter);

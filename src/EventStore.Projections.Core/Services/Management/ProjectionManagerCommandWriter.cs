@@ -14,19 +14,12 @@ namespace EventStore.Projections.Core.Services.Management {
 			IHandle<CoreProjectionManagementMessage.Kill>,
 			IHandle<CoreProjectionManagementMessage.Dispose>,
 			IHandle<CoreProjectionManagementMessage.GetState>,
-			IHandle<CoreProjectionManagementMessage.GetResult>,
-			IHandle<ProjectionManagementMessage.Starting> {
-		private readonly IMultiStreamMessageWriter _commandWriter;
+			IHandle<CoreProjectionManagementMessage.GetResult> {
 		private readonly IDictionary<Guid, IPublisher> _queues;
 		private readonly ILogger _logger = LogManager.GetLoggerFor<ProjectionManagerCommandWriter>();
 
-		public ProjectionManagerCommandWriter(IMultiStreamMessageWriter commandWriter, IDictionary<Guid, IPublisher> queues) {
-			_commandWriter = commandWriter;
+		public ProjectionManagerCommandWriter(IDictionary<Guid, IPublisher> queues) {
 			_queues = queues;
-		}
-
-		public void Handle(ProjectionManagementMessage.Starting message) {
-			_commandWriter.Reset();
 		}
 
 		private IPublisher GetQueueFor(Guid workerId, string messageName) {

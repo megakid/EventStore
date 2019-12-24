@@ -64,8 +64,7 @@ namespace EventStore.Projections.Core {
 					_ioDispatcher,
 					timeoutScheduler);
 
-				var responseWriter = new ResponseWriter(_ioDispatcher);
-				_coreResponseWriter = new ProjectionCoreResponseWriter(responseWriter, masterOutputBus);
+				_coreResponseWriter = new ProjectionCoreResponseWriter(masterOutputBus);
 			}
 		}
 
@@ -124,7 +123,6 @@ namespace EventStore.Projections.Core {
 				coreInputBus.Subscribe<CoreProjectionStatusMessage.Suspended>(_projectionCoreService);
 				//NOTE: message forwarding is set up outside (for Read/Write events)
 
-				coreInputBus.Subscribe<ProjectionCoreServiceMessage.StartCore>(_coreResponseWriter);
 				coreInputBus.Subscribe<CoreProjectionStatusMessage.Faulted>(_coreResponseWriter);
 				coreInputBus.Subscribe<CoreProjectionStatusMessage.Prepared>(_coreResponseWriter);
 				coreInputBus.Subscribe<CoreProjectionStatusMessage.Started>(_coreResponseWriter);

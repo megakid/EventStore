@@ -22,18 +22,11 @@ namespace EventStore.Projections.Core.Services.Management {
 			IHandle<ProjectionManagementMessage.Command.Reset>,
 			IHandle<ProjectionManagementMessage.Command.SetRunAs>,
 			IHandle<ProjectionManagementMessage.Command.UpdateQuery>,
-			IHandle<ProjectionManagementMessage.Command.Delete>,
-			IHandle<ProjectionCoreServiceMessage.StartCore> {
-		private readonly IResponseWriter _writer;
+			IHandle<ProjectionManagementMessage.Command.Delete> {
 		private readonly IPublisher _masterOutputBus;
 
-		public ProjectionCoreResponseWriter(IResponseWriter responseWriter, IPublisher masterOutputBus) {
-			_writer = responseWriter;
+		public ProjectionCoreResponseWriter(IPublisher masterOutputBus) {
 			_masterOutputBus = masterOutputBus;
-		}
-
-		public void Handle(ProjectionCoreServiceMessage.StartCore message) {
-			_writer.Reset();
 		}
 
 		public void Handle(CoreProjectionStatusMessage.Faulted message) {
