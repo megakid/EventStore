@@ -27,6 +27,7 @@ namespace EventStore.Projections.Core {
 		private readonly IODispatcher _ioDispatcher;
 
 		private readonly ProjectionCoreResponseWriter _coreResponseWriter;
+		private readonly IPublisher _masterOutputBus;
 
 		public ProjectionWorkerNode(
 			Guid workerId,
@@ -35,7 +36,8 @@ namespace EventStore.Projections.Core {
 			ITimeProvider timeProvider,
 			ISingletonTimeoutScheduler timeoutScheduler,
 			ProjectionType runProjections,
-			bool faultOutOfOrderProjections) {
+			bool faultOutOfOrderProjections,
+			IPublisher masterOutputBus) {
 			_runProjections = runProjections;
 			Ensure.NotNull(db, "db");
 
@@ -43,6 +45,7 @@ namespace EventStore.Projections.Core {
 
 			IPublisher publisher = CoreOutput;
 			_subscriptionDispatcher = new ReaderSubscriptionDispatcher(publisher);
+			_masterOutputBus = masterOutputBus;
 
 			_ioDispatcher = new IODispatcher(publisher, new PublishEnvelope(inputQueue));
 			_eventReaderCoreService = new EventReaderCoreService(
@@ -72,7 +75,7 @@ namespace EventStore.Projections.Core {
 					timeoutScheduler);
 
 				var responseWriter = new ResponseWriter(_ioDispatcher);
-				_coreResponseWriter = new ProjectionCoreResponseWriter(responseWriter);
+				_coreResponseWriter = new ProjectionCoreResponseWriter(responseWriter, _masterOutputBus);
 			}
 		}
 

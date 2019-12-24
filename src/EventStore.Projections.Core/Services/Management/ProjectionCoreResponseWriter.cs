@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using EventStore.Common.Log;
-using EventStore.Common.Utils;
-using EventStore.Core.Bus;
+﻿using EventStore.Core.Bus;
 using EventStore.Projections.Core.Messages;
-using EventStore.Projections.Core.Messages.Persisted.Responses;
 
 namespace EventStore.Projections.Core.Services.Management {
 	public sealed class ProjectionCoreResponseWriter
@@ -29,9 +25,11 @@ namespace EventStore.Projections.Core.Services.Management {
 			IHandle<ProjectionManagementMessage.Command.Delete>,
 			IHandle<ProjectionCoreServiceMessage.StartCore> {
 		private readonly IResponseWriter _writer;
+		private readonly IPublisher _masterOutputBus;
 
-		public ProjectionCoreResponseWriter(IResponseWriter responseWriter) {
+		public ProjectionCoreResponseWriter(IResponseWriter responseWriter, IPublisher masterOutputBus) {
 			_writer = responseWriter;
+			_masterOutputBus = masterOutputBus;
 		}
 
 		public void Handle(ProjectionCoreServiceMessage.StartCore message) {
@@ -39,192 +37,83 @@ namespace EventStore.Projections.Core.Services.Management {
 		}
 
 		public void Handle(CoreProjectionStatusMessage.Faulted message) {
-			var command = new Faulted {Id = message.ProjectionId.ToString("N"), FaultedReason = message.FaultedReason,};
-			_writer.PublishCommand("$faulted", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(CoreProjectionStatusMessage.Prepared message) {
-			var command = new Prepared {
-				Id = message.ProjectionId.ToString("N"),
-				SourceDefinition = message.SourceDefinition,
-			};
-			_writer.PublishCommand("$prepared", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(CoreProjectionStatusMessage.Started message) {
-			var command = new Started {Id = message.ProjectionId.ToString("N"),};
-			_writer.PublishCommand("$started", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(CoreProjectionStatusMessage.StatisticsReport message) {
-			var command = new StatisticsReport {
-				Id = message.ProjectionId.ToString("N"),
-				Statistics = message.Statistics
-			};
-			_writer.PublishCommand("$statistics-report", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(CoreProjectionStatusMessage.Stopped message) {
-			var command = new Stopped
-				{Id = message.ProjectionId.ToString("N"), Completed = message.Completed, Name = message.Name};
-			_writer.PublishCommand("$stopped", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(CoreProjectionStatusMessage.StateReport message) {
-			var command = new StateReport {
-				Id = message.ProjectionId.ToString("N"),
-				State = message.State,
-				CorrelationId = message.CorrelationId.ToString("N"),
-				Position = message.Position,
-				Partition = message.Partition
-			};
-			_writer.PublishCommand("$state", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(CoreProjectionStatusMessage.ResultReport message) {
-			var command = new ResultReport {
-				Id = message.ProjectionId.ToString("N"),
-				Result = message.Result,
-				CorrelationId = message.CorrelationId.ToString("N"),
-				Position = message.Position,
-				Partition = message.Partition
-			};
-			_writer.PublishCommand("$result", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(ProjectionManagementMessage.Command.Abort message) {
-			var command = new AbortCommand {
-				Name = message.Name,
-				RunAs = message.RunAs,
-			};
-			_writer.PublishCommand("$abort", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(ProjectionManagementMessage.Command.Disable message) {
-			var command = new DisableCommand {
-				Name = message.Name,
-				RunAs = message.RunAs,
-			};
-			_writer.PublishCommand("$disable", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(ProjectionManagementMessage.Command.Enable message) {
-			var command = new EnableCommand {
-				Name = message.Name,
-				RunAs = message.RunAs,
-			};
-			_writer.PublishCommand("$enable", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(ProjectionManagementMessage.Command.GetQuery message) {
-			var command = new GetQueryCommand {
-				Name = message.Name,
-				RunAs = message.RunAs,
-			};
-			_writer.PublishCommand("$get-query", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(ProjectionManagementMessage.Command.GetResult message) {
-			var command = new GetResultCommand {
-				Name = message.Name,
-				Partition = message.Partition,
-			};
-			_writer.PublishCommand("$get-result", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(ProjectionManagementMessage.Command.GetState message) {
-			var command = new GetStateCommand {
-				Name = message.Name,
-				Partition = message.Partition,
-			};
-			_writer.PublishCommand("$get-state", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(ProjectionManagementMessage.Command.GetStatistics message) {
-			var command = new GetStatisticsCommand {
-				Name = message.Name,
-				IncludeDeleted = message.IncludeDeleted,
-				Mode = message.Mode
-			};
-			_writer.PublishCommand("$get-statistics", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(ProjectionManagementMessage.Command.Post message) {
-			var command = new PostCommand {
-				Name = message.Name,
-				RunAs = message.RunAs,
-				CheckpointsEnabled = message.CheckpointsEnabled,
-				TrackEmittedStreams = message.TrackEmittedStreams,
-				EmitEnabled = message.EmitEnabled,
-				EnableRunAs = message.EnableRunAs,
-				Enabled = message.Enabled,
-				HandlerType = message.HandlerType,
-				Mode = message.Mode,
-				Query = message.Query,
-			};
-			_writer.PublishCommand("$post", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(ProjectionManagementMessage.Command.PostBatch message) {
-			var projections = new List<PostBatchCommand.ProjectionPost>();
-			foreach(var proj in message.Projections) {
-				projections.Add(new PostBatchCommand.ProjectionPost{
-					Mode = proj.Mode,
-					RunAs = proj.RunAs,
-					Name = proj.Name,
-					CheckpointsEnabled = proj.CheckpointsEnabled,
-					TrackEmittedStreams = proj.TrackEmittedStreams,
-					EmitEnabled = proj.EmitEnabled,
-					EnableRunAs = proj.EnableRunAs,
-					Enabled = proj.Enabled,
-					HandlerType = proj.HandlerType,
-					Query = proj.Query
-				});
-			}
-			var command = new PostBatchCommand {
-				RunAs = message.RunAs,
-				Projections = projections.ToArray()
-			};
-			_writer.PublishCommand("$post-batch", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(ProjectionManagementMessage.Command.Reset message) {
-			var command = new ResetCommand {
-				Name = message.Name,
-				RunAs = message.RunAs,
-			};
-			_writer.PublishCommand("$reset", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(ProjectionManagementMessage.Command.SetRunAs message) {
-			var command = new SetRunAsCommand {
-				Name = message.Name,
-				RunAs = message.RunAs,
-				SetRemove = message.Action,
-			};
-			_writer.PublishCommand("$set-runas", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(ProjectionManagementMessage.Command.UpdateQuery message) {
-			var command = new UpdateQueryCommand {
-				Name = message.Name,
-				RunAs = message.RunAs,
-				EmitEnabled = message.EmitEnabled,
-				HandlerType = message.HandlerType,
-				Query = message.Query,
-			};
-			_writer.PublishCommand("$update-query", command);
+			_masterOutputBus.Publish(message);
 		}
 
 		public void Handle(ProjectionManagementMessage.Command.Delete message) {
-			var command = new DeleteCommand {
-				Name = message.Name,
-				RunAs = message.RunAs,
-				DeleteCheckpointStream = message.DeleteCheckpointStream,
-				DeleteStateStream = message.DeleteStateStream,
-				DeleteEmittedStreams = message.DeleteEmittedStreams,
-			};
-			_writer.PublishCommand("$delete", command);
+			_masterOutputBus.Publish(message);
 		}
 	}
 }
