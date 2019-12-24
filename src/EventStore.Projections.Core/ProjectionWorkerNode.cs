@@ -17,7 +17,6 @@ namespace EventStore.Projections.Core {
 	public class ProjectionWorkerNode {
 		private readonly ProjectionType _runProjections;
 		private readonly ProjectionCoreService _projectionCoreService;
-		private readonly ProjectionCoreServiceCommandReader _projectionCoreServiceCommandReader;
 		private readonly InMemoryBus _coreOutput;
 		private readonly EventReaderCoreService _eventReaderCoreService;
 
@@ -27,7 +26,6 @@ namespace EventStore.Projections.Core {
 		private readonly IODispatcher _ioDispatcher;
 
 		private readonly ProjectionCoreResponseWriter _coreResponseWriter;
-		private readonly IPublisher _masterOutputBus;
 
 		public ProjectionWorkerNode(
 			Guid workerId,
@@ -45,7 +43,6 @@ namespace EventStore.Projections.Core {
 
 			IPublisher publisher = CoreOutput;
 			_subscriptionDispatcher = new ReaderSubscriptionDispatcher(publisher);
-			_masterOutputBus = masterOutputBus;
 
 			_ioDispatcher = new IODispatcher(publisher, new PublishEnvelope(inputQueue));
 			_eventReaderCoreService = new EventReaderCoreService(
@@ -58,13 +55,6 @@ namespace EventStore.Projections.Core {
 
 			_feedReaderService = new FeedReaderService(_subscriptionDispatcher, timeProvider);
 			if (runProjections >= ProjectionType.System) {
-				_projectionCoreServiceCommandReader = new ProjectionCoreServiceCommandReader(
-					publisher,
-					_ioDispatcher,
-					workerId.ToString("N"));
-
-				var multiStreamWriter = new MultiStreamMessageWriter(_ioDispatcher);
-
 				_projectionCoreService = new ProjectionCoreService(
 					workerId,
 					inputQueue,
@@ -75,7 +65,7 @@ namespace EventStore.Projections.Core {
 					timeoutScheduler);
 
 				var responseWriter = new ResponseWriter(_ioDispatcher);
-				_coreResponseWriter = new ProjectionCoreResponseWriter(responseWriter, _masterOutputBus);
+				_coreResponseWriter = new ProjectionCoreResponseWriter(responseWriter, masterOutputBus);
 			}
 		}
 
@@ -110,8 +100,6 @@ namespace EventStore.Projections.Core {
 				coreInputBus.Subscribe<ProjectionCoreServiceMessage.StartCore>(_projectionCoreService);
 				coreInputBus.Subscribe<ProjectionCoreServiceMessage.StopCore>(_projectionCoreService);
 				coreInputBus.Subscribe<ProjectionCoreServiceMessage.StopCoreTimeout>(_projectionCoreService);
-				coreInputBus.Subscribe<ProjectionCoreServiceMessage.StartCore>(_projectionCoreServiceCommandReader);
-				coreInputBus.Subscribe<ProjectionCoreServiceMessage.StopCore>(_projectionCoreServiceCommandReader);
 				coreInputBus.Subscribe<ProjectionCoreServiceMessage.CoreTick>(_projectionCoreService);
 				coreInputBus.Subscribe<CoreProjectionManagementMessage.CreateAndPrepare>(_projectionCoreService);
 				coreInputBus.Subscribe<CoreProjectionManagementMessage.CreatePrepared>(_projectionCoreService);

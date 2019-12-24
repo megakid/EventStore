@@ -43,8 +43,6 @@ namespace EventStore.Projections.Core {
 
 			var commandWriter = new MultiStreamMessageWriter(ioDispatcher);
 			var projectionManagerCommandWriter = new ProjectionManagerCommandWriter(commandWriter, queues);
-			var projectionManagerResponseReader = new ProjectionManagerResponseReader(outputBus, ioDispatcher,
-				queues.Count);
 
 			var projectionManager = new ProjectionManager(
 				inputQueue,
@@ -59,7 +57,6 @@ namespace EventStore.Projections.Core {
 				projectionsStandardComponents.MasterMainBus,
 				projectionManager,
 				projectionsStandardComponents.RunProjections,
-				projectionManagerResponseReader,
 				ioDispatcher,
 				projectionManagerCommandWriter);
 
@@ -71,7 +68,6 @@ namespace EventStore.Projections.Core {
 			ISubscriber mainBus,
 			ProjectionManager projectionManager,
 			ProjectionType runProjections,
-			ProjectionManagerResponseReader projectionManagerResponseReader,
 			IODispatcher ioDispatcher,
 			ProjectionManagerCommandWriter projectionManagerCommandWriter) {
 			if (runProjections >= ProjectionType.System) {
@@ -102,7 +98,6 @@ namespace EventStore.Projections.Core {
 				mainBus.Subscribe<ProjectionManagementMessage.ReaderReady>(projectionManager);
 				mainBus.Subscribe<ProjectionSubsystemMessage.StartComponents>(projectionManager);
 				mainBus.Subscribe<ProjectionSubsystemMessage.StopComponents>(projectionManager);
-				mainBus.Subscribe<ProjectionManagementMessage.Starting>(projectionManagerResponseReader);
 			}
 
 			mainBus.Subscribe<ClientMessage.WriteEventsCompleted>(projectionManager);
