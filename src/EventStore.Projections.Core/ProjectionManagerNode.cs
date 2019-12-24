@@ -42,7 +42,7 @@ namespace EventStore.Projections.Core {
 			}
 
 			var commandWriter = new MultiStreamMessageWriter(ioDispatcher);
-			var projectionManagerCommandWriter = new ProjectionManagerCommandWriter(commandWriter);
+			var projectionManagerCommandWriter = new ProjectionManagerCommandWriter(commandWriter, queues);
 			var projectionManagerResponseReader = new ProjectionManagerResponseReader(outputBus, ioDispatcher,
 				queues.Count);
 

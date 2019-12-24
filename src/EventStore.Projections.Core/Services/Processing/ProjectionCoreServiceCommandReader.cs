@@ -204,85 +204,8 @@ namespace EventStore.Projections.Core.Services.Processing {
 			}
 
 			switch (command) {
-				case "$create-prepared": {
-					var commandBody = resolvedEvent.Event.Data.ParseJson<CreatePreparedCommand>();
-					_publisher.Publish(
-						new CoreProjectionManagementMessage.CreatePrepared(
-							Guid.ParseExact(commandBody.Id, "N"),
-							Guid.Empty,
-							commandBody.Name,
-							commandBody.Version,
-							commandBody.Config.ToConfig(),
-							commandBody.SourceDefinition,
-							commandBody.HandlerType,
-							commandBody.Query));
-					break;
-				}
-				case "$create-and-prepare": {
-					var commandBody = resolvedEvent.Event.Data.ParseJson<CreateAndPrepareCommand>();
-					_publisher.Publish(
-						new CoreProjectionManagementMessage.CreateAndPrepare(
-							Guid.ParseExact(commandBody.Id, "N"),
-							Guid.Empty,
-							commandBody.Name,
-							commandBody.Version,
-							commandBody.Config.ToConfig(),
-							commandBody.HandlerType,
-							commandBody.Query));
-					break;
-				}
-				case "$load-stopped": {
-					var commandBody = resolvedEvent.Event.Data.ParseJson<LoadStoppedCommand>();
-					_publisher.Publish(
-						new CoreProjectionManagementMessage.LoadStopped(
-							Guid.ParseExact(commandBody.Id, "N"),
-							Guid.Empty));
-					break;
-				}
-				case "$start": {
-					var commandBody = resolvedEvent.Event.Data.ParseJson<StartCommand>();
-					_publisher.Publish(
-						new CoreProjectionManagementMessage.Start(Guid.ParseExact(commandBody.Id, "N"), Guid.Empty));
-					break;
-				}
-				case "$stop": {
-					var commandBody = resolvedEvent.Event.Data.ParseJson<StopCommand>();
-					_publisher.Publish(
-						new CoreProjectionManagementMessage.Stop(Guid.ParseExact(commandBody.Id, "N"), Guid.Empty));
-					break;
-				}
-				case "$kill": {
-					var commandBody = resolvedEvent.Event.Data.ParseJson<KillCommand>();
-					_publisher.Publish(
-						new CoreProjectionManagementMessage.Kill(Guid.ParseExact(commandBody.Id, "N"), Guid.Empty));
-					break;
-				}
-				case "$dispose": {
-					var commandBody = resolvedEvent.Event.Data.ParseJson<DisposeCommand>();
-					_publisher.Publish(
-						new CoreProjectionManagementMessage.Dispose(Guid.ParseExact(commandBody.Id, "N"), Guid.Empty));
-					break;
-				}
-				case "$get-state": {
-					var commandBody = resolvedEvent.Event.Data.ParseJson<GetStateCommand>();
-					_publisher.Publish(
-						new CoreProjectionManagementMessage.GetState(
-							Guid.ParseExact(commandBody.CorrelationId, "N"),
-							Guid.ParseExact(commandBody.Id, "N"),
-							commandBody.Partition,
-							Guid.Empty));
-					break;
-				}
-				case "$get-result": {
-					var commandBody = resolvedEvent.Event.Data.ParseJson<GetResultCommand>();
-					_publisher.Publish(
-						new CoreProjectionManagementMessage.GetResult(
-							Guid.ParseExact(commandBody.CorrelationId, "N"),
-							Guid.ParseExact(commandBody.Id, "N"),
-							commandBody.Partition,
-							Guid.Empty));
-					break;
-				}
+
+
 				default:
 					throw new Exception("Unknown command: " + command);
 			}
