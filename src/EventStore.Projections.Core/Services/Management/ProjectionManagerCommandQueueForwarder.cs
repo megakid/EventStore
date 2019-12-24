@@ -5,7 +5,7 @@ using EventStore.Core.Bus;
 using EventStore.Projections.Core.Messages;
 
 namespace EventStore.Projections.Core.Services.Management {
-	public sealed class ProjectionManagerCommandWriter
+	public sealed class ProjectionManagerCommandQueueForwarder
 		: IHandle<CoreProjectionManagementMessage.CreatePrepared>,
 			IHandle<CoreProjectionManagementMessage.CreateAndPrepare>,
 			IHandle<CoreProjectionManagementMessage.LoadStopped>,
@@ -16,9 +16,9 @@ namespace EventStore.Projections.Core.Services.Management {
 			IHandle<CoreProjectionManagementMessage.GetState>,
 			IHandle<CoreProjectionManagementMessage.GetResult> {
 		private readonly IDictionary<Guid, IPublisher> _queues;
-		private readonly ILogger _logger = LogManager.GetLoggerFor<ProjectionManagerCommandWriter>();
+		private readonly ILogger _logger = LogManager.GetLoggerFor<ProjectionManagerCommandQueueForwarder>();
 
-		public ProjectionManagerCommandWriter(IDictionary<Guid, IPublisher> queues) {
+		public ProjectionManagerCommandQueueForwarder(IDictionary<Guid, IPublisher> queues) {
 			_queues = queues;
 		}
 

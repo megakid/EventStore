@@ -2,7 +2,7 @@
 using EventStore.Projections.Core.Messages;
 
 namespace EventStore.Projections.Core.Services.Management {
-	public sealed class ProjectionCoreResponseWriter
+	public sealed class ProjectionCoreResponseQueueForwarder
 		: IHandle<CoreProjectionStatusMessage.Faulted>,
 			IHandle<CoreProjectionStatusMessage.Prepared>,
 			IHandle<CoreProjectionStatusMessage.Started>,
@@ -25,7 +25,7 @@ namespace EventStore.Projections.Core.Services.Management {
 			IHandle<ProjectionManagementMessage.Command.Delete> {
 		private readonly IPublisher _masterOutputBus;
 
-		public ProjectionCoreResponseWriter(IPublisher masterOutputBus) {
+		public ProjectionCoreResponseQueueForwarder(IPublisher masterOutputBus) {
 			_masterOutputBus = masterOutputBus;
 		}
 
