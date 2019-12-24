@@ -97,11 +97,6 @@ namespace EventStore.Projections.Core.Tests.Services.projections_manager {
 			_bus.Subscribe<ClientMessage.DeleteStreamCompleted>(_manager);
 			_bus.Subscribe<ProjectionSubsystemMessage.StartComponents>(_manager);
 			_bus.Subscribe<ProjectionSubsystemMessage.StopComponents>(_manager);
-			_bus.Subscribe<ProjectionManagementMessage.ReaderReady>(_manager);
-			_bus.Subscribe(
-				CallbackSubscriber.Create<ProjectionManagementMessage.Starting>(
-					starting => _queue.Publish(new ProjectionManagementMessage.ReaderReady())));
-
 			_bus.Subscribe<ProjectionSubsystemMessage.StartComponents>(_coordinator);
 			_bus.Subscribe<ProjectionSubsystemMessage.StopComponents>(_coordinator);
 

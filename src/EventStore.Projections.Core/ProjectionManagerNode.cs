@@ -94,7 +94,6 @@ namespace EventStore.Projections.Core {
 				mainBus.Subscribe<CoreProjectionStatusMessage.StateReport>(projectionManager);
 				mainBus.Subscribe<CoreProjectionStatusMessage.ResultReport>(projectionManager);
 				mainBus.Subscribe<CoreProjectionStatusMessage.StatisticsReport>(projectionManager);
-				mainBus.Subscribe<ProjectionManagementMessage.ReaderReady>(projectionManager);
 				mainBus.Subscribe<ProjectionSubsystemMessage.StartComponents>(projectionManager);
 				mainBus.Subscribe<ProjectionSubsystemMessage.StopComponents>(projectionManager);
 			}

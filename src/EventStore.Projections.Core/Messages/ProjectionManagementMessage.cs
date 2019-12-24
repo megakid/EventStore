@@ -954,14 +954,6 @@ namespace EventStore.Projections.Core.Messages {
 			}
 		}
 
-		public class ReaderReady : Message {
-			private static readonly int TypeId = System.Threading.Interlocked.Increment(ref NextMsgId);
-
-			public override int MsgTypeId {
-				get { return TypeId; }
-			}
-		}
-
 		public class ProjectionConfig : Message {
 			private static readonly int TypeId = System.Threading.Interlocked.Increment(ref NextMsgId);
 
