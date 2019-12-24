@@ -187,7 +187,6 @@ namespace EventStore.Projections.Core.Services.Management {
 			_logger.Debug("PROJECTIONS: Starting Projections Manager. Correlation: {correlation}", _instanceCorrelationId);
 			
 			_started = true;
-			_publisher.Publish(new ProjectionManagementMessage.Starting(_instanceCorrelationId));
 			if (_runProjections >= ProjectionType.System)
 				StartExistingProjections(
 					() => {

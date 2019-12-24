@@ -211,8 +211,6 @@ namespace EventStore.Projections.Core.Tests.Services.projections_manager {
 				output_.Subscribe(Forwarder.Create<CoreProjectionStatusMessage.Faulted>(GetInputQueue()));
 				output_.Subscribe(Forwarder.Create<CoreProjectionStatusMessage.Prepared>(GetInputQueue()));
 				output_.Subscribe(
-					Forwarder.Create<CoreProjectionStatusMessage.ProjectionWorkerStarted>(GetInputQueue()));
-				output_.Subscribe(
 					Forwarder.Create<ProjectionManagementMessage.Command.ControlMessage>(GetInputQueue()));
 				output_.Subscribe(Forwarder.Create<AwakeServiceMessage.SubscribeAwake>(GetInputQueue()));
 				output_.Subscribe(Forwarder.Create<AwakeServiceMessage.UnsubscribeAwake>(GetInputQueue()));
