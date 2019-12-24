@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using EventStore.Common.Options;
 using EventStore.Core;
 using EventStore.Core.Bus;
@@ -41,7 +40,7 @@ namespace EventStore.Projections.Core {
 				}
 			}
 
-			var projectionManagerCommandWriter = new ProjectionManagerCommandQueueForwarder(queues);
+			var projectionManagerMessageDispatcher = new ProjectionManagerMessageDispatcher(queues);
 
 			var projectionManager = new ProjectionManager(
 				inputQueue,
@@ -57,7 +56,7 @@ namespace EventStore.Projections.Core {
 				projectionManager,
 				projectionsStandardComponents.RunProjections,
 				ioDispatcher,
-				projectionManagerCommandWriter);
+				projectionManagerMessageDispatcher);
 
 
 			SubscribeOutputBus(standardComponents, projectionsStandardComponents, forwarder);
@@ -68,7 +67,7 @@ namespace EventStore.Projections.Core {
 			ProjectionManager projectionManager,
 			ProjectionType runProjections,
 			IODispatcher ioDispatcher,
-			ProjectionManagerCommandQueueForwarder projectionManagerCommandQueueForwarder) {
+			ProjectionManagerMessageDispatcher projectionManagerMessageDispatcher) {
 			if (runProjections >= ProjectionType.System) {
 				mainBus.Subscribe<ProjectionManagementMessage.Command.Post>(projectionManager);
 				mainBus.Subscribe<ProjectionManagementMessage.Command.PostBatch>(projectionManager);
@@ -110,15 +109,7 @@ namespace EventStore.Projections.Core {
 			mainBus.Subscribe(ioDispatcher.Writer);
 			mainBus.Subscribe(ioDispatcher);
 
-			mainBus.Subscribe<CoreProjectionManagementMessage.CreatePrepared>(projectionManagerCommandQueueForwarder);
-			mainBus.Subscribe<CoreProjectionManagementMessage.CreateAndPrepare>(projectionManagerCommandQueueForwarder);
-			mainBus.Subscribe<CoreProjectionManagementMessage.LoadStopped>(projectionManagerCommandQueueForwarder);
-			mainBus.Subscribe<CoreProjectionManagementMessage.Start>(projectionManagerCommandQueueForwarder);
-			mainBus.Subscribe<CoreProjectionManagementMessage.Stop>(projectionManagerCommandQueueForwarder);
-			mainBus.Subscribe<CoreProjectionManagementMessage.Kill>(projectionManagerCommandQueueForwarder);
-			mainBus.Subscribe<CoreProjectionManagementMessage.Dispose>(projectionManagerCommandQueueForwarder);
-			mainBus.Subscribe<CoreProjectionManagementMessage.GetState>(projectionManagerCommandQueueForwarder);
-			mainBus.Subscribe<CoreProjectionManagementMessage.GetResult>(projectionManagerCommandQueueForwarder);
+			mainBus.Subscribe(projectionManagerMessageDispatcher);
 		}
 
 		private static void SubscribeOutputBus(
