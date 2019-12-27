@@ -286,7 +286,7 @@ namespace EventStore.ClientAPI.Transport.Tcp {
 			if (socket != null) {
 				using (socket) {
 					Helper.EatException(() => socket.Shutdown(SocketShutdown.Both));
-					Helper.EatException(() => socket.Close(TcpConfiguration.SocketCloseTimeoutMs));
+					Helper.EatException(() => socket.Close());
 					Volatile.Write(ref _socket, null);
 				}
 			}

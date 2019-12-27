@@ -334,7 +334,7 @@ namespace EventStore.Transport.Tcp {
 			if (_socket != null) {
 				using (_socket) {
 					Helper.EatException(() => _socket.Shutdown(SocketShutdown.Both));
-					Helper.EatException(() => _socket.Close(TcpConfiguration.SocketCloseTimeoutMs));
+					Helper.EatException(() => _socket.Close());
 					_socket = null;
 				}
 			}

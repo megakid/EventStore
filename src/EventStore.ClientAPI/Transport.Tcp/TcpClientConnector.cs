@@ -110,7 +110,7 @@ namespace EventStore.ClientAPI.Transport.Tcp {
 				var pendingConnection = callbacks.PendingConnection;
 
 				Helper.EatException(() => socketArgs.AcceptSocket.Shutdown(SocketShutdown.Both));
-				Helper.EatException(() => socketArgs.AcceptSocket.Close(TcpConfiguration.SocketCloseTimeoutMs));
+				Helper.EatException(() => socketArgs.AcceptSocket.Close());
 				socketArgs.AcceptSocket = null;
 				callbacks.Reset();
 				_connectSocketArgsPool.Return(socketArgs);
