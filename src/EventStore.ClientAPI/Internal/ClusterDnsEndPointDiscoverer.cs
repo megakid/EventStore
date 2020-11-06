@@ -24,6 +24,7 @@ namespace EventStore.ClientAPI.Internal {
 		private TimeSpan _gossipTimeout;
 
 		private readonly NodePreference _nodePreference;
+		private readonly bool _insecureDiscoverGossip;
 
 		public ClusterDnsEndPointDiscoverer(ILogger log,
 			string clusterDns,
@@ -32,6 +33,7 @@ namespace EventStore.ClientAPI.Internal {
 			GossipSeed[] gossipSeeds,
 			TimeSpan gossipTimeout,
 			NodePreference nodePreference,
+			bool insecureDiscoverGossip,
 			HttpMessageHandler httpMessageHandler = null) {
 			Ensure.NotNull(log, "log");
 
@@ -43,6 +45,7 @@ namespace EventStore.ClientAPI.Internal {
 			_gossipTimeout = gossipTimeout;
 			_client = new HttpAsyncClient(_gossipTimeout, httpMessageHandler);
 			_nodePreference = nodePreference;
+			_insecureDiscoverGossip = insecureDiscoverGossip;
 		}
 
 		public Task<NodeEndPoints> DiscoverAsync(EndPoint failedTcpEndPoint) {
@@ -103,7 +106,7 @@ namespace EventStore.ClientAPI.Internal {
 				endpoints = _gossipSeeds;
 			} else {
 				endpoints = ResolveDns(_clusterDns)
-					.Select(x => new GossipSeed(new IPEndPoint(x, _httpGossipPort))).ToArray();
+					.Select(x => new GossipSeed(new IPEndPoint(x, _httpGossipPort), !_insecureDiscoverGossip)).ToArray();
 			}
 
 			RandomShuffle(endpoints, 0, endpoints.Length - 1);
